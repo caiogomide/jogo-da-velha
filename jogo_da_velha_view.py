@@ -5,7 +5,9 @@ from tkinter import Button
 from tkinter import PhotoImage
 from agente_inteligente import AgenteInteligente
 
+import asyncio
 from time import sleep
+from grade import Grade
 from jogo_da_velha_controller import JogoDaVelhaController
 from usuario import Usuario
 
@@ -114,11 +116,21 @@ class JogoDaVelhaView(tk.Tk):
         tela_de_jogo = tk.Frame(master=self, bg="#F5F5F5",pady=100,padx=200)
                         
 
+        # Indica se venceu, empatou ou perdeu
+        self.status = tk.Label(
+            bg = "#F5F5F5",
+            master = tela_de_jogo,
+            text = "",
+            font=font.Font(size=12, weight="bold"),
+            pady=50
+        )
+        self.status.grid(row=8,column=1)
+
 
         # Cria o placar do jogo
         self.placar = tk.Label(
             bg = "#F5F5F5",
-            
+
             master=tela_de_jogo,
 
             text=  f"| Usuário: {pontuacao_usuario} | \n |  Computador: {pontuacao_agente_inteligente} | \n | Empates: {contador_empates} |",
@@ -186,10 +198,12 @@ class JogoDaVelhaView(tk.Tk):
         
 
     def atualiza_acao_computador(self):
-    
-        if self.jogo._flag_rodada == 'agente_inteligente':
-            melhor_posicao = self.jogo._agente_inteligente.posicionar_simbolo(self.jogo._grade_atual, self.jogo)
+        
 
+        if self.jogo._flag_rodada == 'agente_inteligente':
+
+            melhor_posicao = self.jogo._agente_inteligente.posicionar_simbolo(self.jogo._grade_atual, self.jogo)
+                
             for botao, posicao in self.posicoes.items():                
                 if posicao == melhor_posicao:
                     posicao_clicada = botao
@@ -216,8 +230,12 @@ class JogoDaVelhaView(tk.Tk):
 
                 return False
 
+
+
     # Evento ativado ao jogador clicar em posicao
     def clique_posicao(self, event):
+  
+
         if self.jogo._flag_rodada == 'usuario':
 
             posicao_clicada = event.widget    
@@ -229,17 +247,14 @@ class JogoDaVelhaView(tk.Tk):
 
                 # Posiciona o simbolo escolhido e atualiza a view
                 self.jogo._usuario.posicionar_simbolo(linha, coluna, self.jogo._grade_atual)
-                self.atualiza_imagem_posicao(posicao_clicada, self.jogo._usuario.simbolo)
-                
-                
-                if self.jogo.checa_vencedores() != '' or self.jogo.checa_empate():
-                    self.atualiza_view()
-                else:
-                    self.jogo._flag_rodada = 'agente_inteligente'
-                    self.atualiza_acao_computador()
+                self.atualiza_imagem_posicao(posicao_clicada, self.jogo._usuario.simbolo)           
+               
+                self.jogo._flag_rodada = 'agente_inteligente'
+                self.atualiza_acao_computador()
+   
     
     def atualiza_pontuacao(self):
-        print("atualiza_pontuacao")
+        
         self.jogo.atualiza_pontuacao()
         # Capta a pontuação dos jogadores
         pontuacao_usuario = self.jogo._pontuacao_jogador
@@ -248,22 +263,62 @@ class JogoDaVelhaView(tk.Tk):
 
         dados_placar=f"| Usuário: {pontuacao_usuario} | \n | Computador: {pontuacao_agente_inteligente} | \n | Empates: {contador_empates} |"
         self.placar.config(text=dados_placar)
+        
+   
     
     def _reset_view(self):
-       
+        
         # Encontra a coordenada selecionada
         for posicao in self.posicoes.keys():     
             posicao.config(image=PhotoImage(file = f"assets/background/background-cor.png"))
 
+
+    def _personaliza_empate(self):
+
+        for posicao in self.posicoes.keys():     
+            posicao.config(highlightbackground="#F24F00")
+            posicao.config(highlightthickness=5)
+            self.status.config(text="EMPATE")
+            self.status.config(fg="#F24F00")
+
+    def _personaliza_usuario_ganhou(self):
+        for posicao, coordenada in self.posicoes.items():
+
+            if coordenada in self.jogo.sequencia_vencedora():
+                posicao.config(highlightbackground="#32CD32")
+                posicao.config(highlightthickness=5)
+                self.status.config(text="VOCÊ VENCEU!")
+                self.status.config(fg="#32CD32")
+
+        
+    def _personaliza_agente_ganhou(self):
+        for posicao, coordenada in self.posicoes.items():
+
+            if coordenada in self.jogo.sequencia_vencedora():
+                posicao.config(highlightbackground="#ff0800")
+                posicao.config(highlightthickness=5)
+                self.status.config(text="VOCÊ PERDEU!")
+                self.status.config(fg="#ff0800")
+
+
     def atualiza_view(self):
+        
         self.jogo._ha_vencedor = self.jogo.checa_vencedores() 
-       
         self.atualiza_pontuacao()
-        self._reset_view()
+
+        usuario_ganhou = self.jogo.checa_vencedores() == self.jogo._usuario.simbolo
+        agente_ganhou = self.jogo.checa_vencedores() == self.jogo._agente_inteligente.simbolo
+
+        # View de empate
+        if self.jogo.checa_empate():
+            self._personaliza_empate()
+        
+        elif usuario_ganhou:
+            self._personaliza_usuario_ganhou()
+        
+        elif agente_ganhou:
+            self._personaliza_agente_ganhou()
+
         self.jogo.reset_controller()
-
-            
-
-                
 
       

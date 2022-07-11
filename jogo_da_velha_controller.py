@@ -1,4 +1,4 @@
-   
+    
 from agente_inteligente import AgenteInteligente
 from grade import Grade
 from usuario import Usuario
@@ -88,6 +88,33 @@ class JogoDaVelhaController:
         
         return combinacoes_vencedoras_possiveis
     
+    # Devolve a sequencia que venceu o jogo
+    def sequencia_vencedora(self):
+
+        orientacoes = ['Horizontal', 'Vertical', 'Diagonal']
+        vencedor = self.checa_vencedores()
+        for orientacao in orientacoes:
+            
+            # Checa se há vencedores na orientacao dada
+            combinacoes_vencedoras_por_orientacao = self._combinacoes_vencedoras[orientacao]
+            posicoes_simbolos = self._grade_atual.posicoes
+            for combinacao_vencedora_orientada in combinacoes_vencedoras_por_orientacao:
+                combinacao_vencedora = 0
+                # Checa se cada combinação ocorre
+                for i in range(3):
+                    linha, coluna = combinacao_vencedora_orientada[i]
+                    # Caso um elemento de uma combinação não tenha sido preenchido, pula para próxima combinação
+                    if posicoes_simbolos[linha][coluna] == []:
+                        break
+                    # Checa se o elemento na posicao dada é X ou O
+                    if posicoes_simbolos[linha][coluna] == vencedor:
+                        combinacao_vencedora+=1
+    
+                # Caso haja uma combinacao de 3 elementos na horizontal do vencedor, devolve as posicoes desta
+                if combinacao_vencedora == 3:
+                    return combinacao_vencedora_orientada
+                
+
     def atualiza_pontuacao(self):
         if self.checa_vencedores() == self._usuario.simbolo:
             self._pontuacao_jogador += 1

@@ -1,7 +1,8 @@
 import random
 import math
 
-from numpy import column_stack
+from random import uniform
+from numpy.random import randn, rand, seed
 from agente_inteligente import AgenteInteligente
 
 from jogo_da_velha_controller import JogoDaVelhaController
@@ -15,8 +16,13 @@ class SimulatedAnnealing(AgenteInteligente):
     def execute(self, grade, jogo):
 
         # Posição inicial de análise - Simulação de jogada
-        posicao_atual = self.posicao_aleatoria_valida(grade)
-        print('posicao_atual:',posicao_atual)
+        # (0,0) ou (0,1) - Qual estiver livre
+        print('teste posicao ocupada',grade.posicoes[0][0])
+        if grade.posicoes[0][0] == []:
+            posicao_atual = (0,0)
+        else:
+            posicao_atual = (0,1)
+        
         # Define o número de iterações inicial
         numero_de_iteracoes = 1
 
@@ -24,7 +30,7 @@ class SimulatedAnnealing(AgenteInteligente):
 
             temperatura = self._temperatura(numero_de_iteracoes)
 
-            if temperatura == 1:
+            if temperatura == 0:
                 return posicao_atual
 
 
@@ -42,15 +48,14 @@ class SimulatedAnnealing(AgenteInteligente):
             if diferenca_qualidade > 0:
                 posicao_atual = proxima_posicao
             # Analisa probabilidade de a ação dada ser boa no futuro
-            # elif(0.3<(math.e)**(diferenca_qualidade/temperatura)):
-            #     print((math.e)**(diferenca_qualidade/temperatura))
-            #     posicao_atual = proxima_posicao
+            elif(random.uniform(0,1)<(math.e)**(diferenca_qualidade/temperatura)):
+                posicao_atual = proxima_posicao
             
             numero_de_iteracoes+=1
 
     # Cacula a temperatura da Simulated Annealing
     def _temperatura(self, numero_de_iteracoes):
-        return 1000/numero_de_iteracoes
+        return int(100/numero_de_iteracoes)
 
     # Analisa se uma posição está definida nos lados da grade
     def _lados(self, posicao):
@@ -88,7 +93,7 @@ class SimulatedAnnealing(AgenteInteligente):
             return False
 
     def _ganha_o_jogo(self, posicao, grade, jogo):
-
+        print('posicao dentro de ganha o jogo: ',posicao)
         linha, coluna = posicao
         # Analisa se o oponente colocar um simbolo na posicao dada ele ganha
 
@@ -141,6 +146,7 @@ class SimulatedAnnealing(AgenteInteligente):
         vizinhos_da_posicao = self.get_vizinhos_da_posicao(posicao)
         posicoes_validas = self.get_posicoes_validas(grade)
         posicoes_vizinhas_validas = [vizinho_da_posicao for vizinho_da_posicao in vizinhos_da_posicao if vizinho_da_posicao in posicoes_validas]
+        print('posicoes_vizinhas_validas:', posicoes_vizinhas_validas)
         # Caso haja vizinhos, escolhe um, caso não, muda para outra posição valida sequencial
         if len(posicoes_vizinhas_validas) > 0:  
             posicao_aleatoria_valida_vizinha = random.choice(posicoes_vizinhas_validas)
@@ -148,10 +154,15 @@ class SimulatedAnnealing(AgenteInteligente):
         else:
             linha, coluna = posicao
             if coluna < 2:
-                return self.posicao_aleatoria_valida_vizinha(grade,(linha, coluna+1))
+                quantidade_de_vizinhos = len(self.posicao_aleatoria_valida_vizinha(grade,(linha, coluna+1)))
+                if quantidade_de_vizinhos > 1:
+                    return self.posicao_aleatoria_valida_vizinha(grade,(linha, coluna+1))
             elif coluna == 2 and linha < 2:
-                return self.posicao_aleatoria_valida_vizinha(grade,(linha+1, coluna))
-            
+                quantidade_de_vizinhos = len(self.posicao_aleatoria_valida_vizinha(grade,(linha+1, coluna)))
+                if quantidade_de_vizinhos > 1:
+                    return self.posicao_aleatoria_valida_vizinha(grade,(linha+1, coluna))
+            else:
+                return self.posicao_aleatoria_valida(grade)
 
     def posicao_aleatoria_valida(self, grade):
         posicoes_validas = self.get_posicoes_validas(grade)
@@ -165,13 +176,13 @@ class SimulatedAnnealing(AgenteInteligente):
                 # Caso o espaço da grade esteja vazio
                 if grade.posicoes[linha][coluna] == []:
                     posicoes_validas.append((linha, coluna))
-        print(grade.posicoes)
         return posicoes_validas
 
 
     def posicionar_simbolo(self, grade, jogo):
 
         melhor_posicionamento = self.execute(grade, jogo)
+        print('melhor_posicionamento',melhor_posicionamento)
         grade.atualiza_grade(melhor_posicionamento[0], melhor_posicionamento[1], self.simbolo, jogo)
         
         return melhor_posicionamento

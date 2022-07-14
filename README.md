@@ -11,3 +11,26 @@ Ao Iniciar o jogo, você pode utilizar com qual deseja jogar!
    🟢 Fácil 
   
 ## 🚀 Começando
+
+ Deseja instalar o Jogo da Velha e jogar na sua máquina!? Siga as instruções a seguir
+ 
+ ### 📋 Pré-requisitos
+ 
+ 
+ 🐍 **Python na versão estável atual (3.8.5)**
+ 
+[Instale o Python 3.8.5 Aqui!](https://www.python.org/downloads/release/python-385/)
+ 
+ *Verifique a instalação com o comando a seguir:*
+ ``` 
+python -- version
+ ```
+📦 **Tkinter na versão estável atual (8.6)**
+
+*Instale com o comando a seguir:*
+  ```
+ pip install tk
+ ```
+
+### 🔧 Instalação
+ 

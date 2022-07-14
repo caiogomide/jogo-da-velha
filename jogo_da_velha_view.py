@@ -3,9 +3,10 @@ import tkinter as tk
 from tkinter import font
 from tkinter import Button
 from tkinter import PhotoImage
-from agente_inteligente import AgenteInteligente
+from simulated_annealing import SimulatedAnnealing
 
-import asyncio
+from threading import Thread
+
 from time import sleep
 from grade import Grade
 from jogo_da_velha_controller import JogoDaVelhaController
@@ -26,6 +27,7 @@ class JogoDaVelhaView(tk.Tk):
         self._tela_inicial = self.cria_tela_inicial()
         self._tela_de_jogo = self.cria_grade()
 
+
         # Define a tela que está sendo mostrada
         self._tela = None
 
@@ -38,9 +40,27 @@ class JogoDaVelhaView(tk.Tk):
         # Mostra a tela inicial
         self.muda_tela(self._tela_inicial)
 
-
-        
+        Thread(target=self.mudanca_listener).start()
     
+       
+        
+    # Checa se houve mudanca no scoring do jogo
+    def mudanca_listener(self):
+        while True:
+          
+            numero_de_jogadas = self.jogo._numero_de_jogadas
+
+            numero_de_posicoes_ocupadas = self.jogo.quantidade_espacos_posicionados()
+
+            if numero_de_jogadas == numero_de_posicoes_ocupadas:
+                if self.jogo.checa_vencedores() == 'X' or self.jogo.checa_vencedores() == 'O' or self.jogo.checa_empate() == True:
+                    sleep(3)
+                    self.jogo.reset_controller()
+                    self._reset_view()
+                    
+            sleep(1)
+            
+
     def muda_tela(self, tela, msg=""):
         # Verifica se foi escolhido algum simbolo para jogar
         if msg == "O" or msg == "X":
@@ -48,9 +68,9 @@ class JogoDaVelhaView(tk.Tk):
             self.jogo._usuario = Usuario(self.simbolo_escolhido)
             
             if msg == "O":
-                self.jogo._agente_inteligente = AgenteInteligente("X")
+                self.jogo._agente_inteligente.simbolo = "X"
             else:
-                self.jogo._agente_inteligente = AgenteInteligente("O")
+                self.jogo._agente_inteligente.simbolo = "O"
 
         nova_tela = tela
 
@@ -199,24 +219,29 @@ class JogoDaVelhaView(tk.Tk):
 
     def atualiza_acao_computador(self):
         
-
-        if self.jogo._flag_rodada == 'agente_inteligente':
-
-            melhor_posicao = self.jogo._agente_inteligente.posicionar_simbolo(self.jogo._grade_atual, self.jogo)
-                
-            for botao, posicao in self.posicoes.items():                
-                if posicao == melhor_posicao:
-                    posicao_clicada = botao
-                    self.atualiza_imagem_posicao(posicao_clicada, self.jogo._agente_inteligente.simbolo)
-
-            if self.jogo.checa_vencedores() != '' or self.jogo.checa_empate():
+  
+        if self.jogo.checa_vencedores() == 'X' or self.jogo.checa_vencedores() == 'O' or self.jogo.checa_empate():
                 self.atualiza_view()
+        else:
+            if self.jogo._flag_rodada == 'agente_inteligente':
 
-        self.jogo._flag_rodada = 'usuario'
+                melhor_posicao = self.jogo._agente_inteligente.posicionar_simbolo(self.jogo._grade_atual, self.jogo)
+                    
+                for botao, posicao in self.posicoes.items():                
+                    if posicao == melhor_posicao:
+                        posicao_clicada = botao
+                        self.atualiza_imagem_posicao(posicao_clicada, self.jogo._agente_inteligente.simbolo)
+
+                if self.jogo.checa_vencedores() != '' or self.jogo.checa_empate():
+                    self.atualiza_view()
+
+            self.jogo._flag_rodada = 'usuario'
 
     # Checa se a posicao dada já não foi clicada
     def posicao_selecionada(self, posicao):
-        
+
+     
+
         # Encontra a coordenada selecionada
         for botao, coordenada in self.posicoes.items():     
             if botao == posicao:
@@ -235,23 +260,26 @@ class JogoDaVelhaView(tk.Tk):
     # Evento ativado ao jogador clicar em posicao
     def clique_posicao(self, event):
   
+        if self.jogo.checa_vencedores() == 'X' or self.jogo.checa_vencedores() == 'O' or self.jogo.checa_empate():
+                self.atualiza_view()
 
-        if self.jogo._flag_rodada == 'usuario':
+        else: 
+            if self.jogo._flag_rodada == 'usuario':
+                posicao_clicada = event.widget    
 
-            posicao_clicada = event.widget    
+                # Checa se a posicao dada já não foi clicada
+                if not self.posicao_selecionada(posicao_clicada):
 
-            # Checa se a posicao dada já não foi clicada
-            if not self.posicao_selecionada(posicao_clicada):
+                    linha, coluna = self.posicoes[posicao_clicada]
 
-                linha, coluna = self.posicoes[posicao_clicada]
-
-                # Posiciona o simbolo escolhido e atualiza a view
-                self.jogo._usuario.posicionar_simbolo(linha, coluna, self.jogo._grade_atual)
-                self.atualiza_imagem_posicao(posicao_clicada, self.jogo._usuario.simbolo)           
-               
-                self.jogo._flag_rodada = 'agente_inteligente'
-                self.atualiza_acao_computador()
-   
+                    # Posiciona o simbolo escolhido e atualiza a view
+                   
+                    self.jogo._usuario.posicionar_simbolo(linha, coluna, self.jogo._grade_atual, self.jogo)
+                    self.atualiza_imagem_posicao(posicao_clicada, self.jogo._usuario.simbolo)           
+                
+                    self.jogo._flag_rodada = 'agente_inteligente'
+                    self.atualiza_acao_computador()
+        
     
     def atualiza_pontuacao(self):
         
@@ -269,8 +297,11 @@ class JogoDaVelhaView(tk.Tk):
     def _reset_view(self):
         
         # Encontra a coordenada selecionada
-        for posicao in self.posicoes.keys():     
-            posicao.config(image=PhotoImage(file = f"assets/background/background-cor.png"))
+        for posicao in self.posicoes.keys():   
+            posicao.config(highlightbackground="#121212", image=PhotoImage(master=self._tela, file = f"assets/background/background-cor.png"), highlightthickness=3)     
+            
+        self.status.config(text="")
+           
 
 
     def _personaliza_empate(self):
@@ -319,6 +350,13 @@ class JogoDaVelhaView(tk.Tk):
         elif agente_ganhou:
             self._personaliza_agente_ganhou()
 
-        self.jogo.reset_controller()
+        
+
+        
+
+            
+
+                
 
       
+

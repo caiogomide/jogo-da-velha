@@ -1,4 +1,4 @@
-from jogador import Jogador
+from controller.jogadores.jogador import Jogador
 
 from abc import abstractmethod
 
@@ -18,4 +18,3 @@ class AgenteInteligente(Jogador):
     def posicionar_simbolo(self, grade, jogo):
 
         pass
-

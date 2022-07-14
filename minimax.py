@@ -7,7 +7,11 @@ class Minimax(AgenteInteligente):
 
         self.simbolo = simbolo
 
-    # Implementacao do algoritimo MiniMax
+    '''
+    Método responsável por realizar a lógica recursiva
+    do algorítimo minimax, retorna a melhor opção de
+    jogada dado uma grade
+    '''
     def minimax(self, grade, maximizando, jogo, profundidade):
 
         pontuacao = self.avaliador(jogo)
@@ -44,6 +48,7 @@ class Minimax(AgenteInteligente):
                         melhor_opcao = max(melhor_opcao, self.minimax(grade, False, jogo, profundidade+1))
                         # Remove o movimento hipotético feito para análise
                         grade.posicoes[linha][coluna] = []
+
             return melhor_opcao
 
         # Caso seja o turno do Usuário
@@ -63,7 +68,13 @@ class Minimax(AgenteInteligente):
 
             return melhor_opcao
 
-    # Avalia as condicoes de vitoria, derrota ou empate
+    '''
+    Método responsável por avaliar, se dado um jogo,
+    o usuário ou o agente inteligente ganhou, ou, ainda,
+    se houve empate, e atribui um valor para cada caso,
+    que representa o interesse do Agente Inteligente
+    por essa escolha
+    '''
     def avaliador(self, jogo):
        
         # Analisa vitoria do Usuario
@@ -73,10 +84,15 @@ class Minimax(AgenteInteligente):
         # Analisa vitoria do Agente Inteligente
         if jogo.checa_vencedores() == self.simbolo:
             return 10
-            
+
         # Caso ninguem tenha ganhado o jogo
         return 0
 
+    '''
+    Método responsável por posicionar o simbolo, 
+    considerando a melhor opção, dado pelo algorítimo
+    Minimax
+    '''
     def posicionar_simbolo(self, grade, jogo):
 
         melhor_opcao = -1000
@@ -96,6 +112,7 @@ class Minimax(AgenteInteligente):
                     if(avaliacao > melhor_opcao):
                         melhor_posicionamento = (linha, coluna)
                         melhor_opcao = avaliacao
-       
+        # Atualiza a grade com o melhor posicionamento escolhido pelo Minimax
         grade.atualiza_grade(melhor_posicionamento[0], melhor_posicionamento[1], self.simbolo,jogo)
         return melhor_posicionamento
+

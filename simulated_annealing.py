@@ -4,8 +4,7 @@ import math
 from random import uniform
 from numpy.random import randn, rand, seed
 from agente_inteligente import AgenteInteligente
-
-from jogo_da_velha_controller import JogoDaVelhaController
+from copy import deepcopy
 
 class SimulatedAnnealing(AgenteInteligente):
     def __init__(self, simbolo):
@@ -16,13 +15,9 @@ class SimulatedAnnealing(AgenteInteligente):
     def execute(self, grade, jogo):
 
         # Posição inicial de análise - Simulação de jogada
-        # (0,0) ou (0,1) - Qual estiver livre
-        print('teste posicao ocupada',grade.posicoes[0][0])
-        if grade.posicoes[0][0] == []:
-            posicao_atual = (0,0)
-        else:
-            posicao_atual = (0,1)
-        
+        posicao_atual = (0,0)
+    
+    
         # Define o número de iterações inicial
         numero_de_iteracoes = 1
 
@@ -39,8 +34,8 @@ class SimulatedAnnealing(AgenteInteligente):
   
             
             # Faz análise da diferença da qualidade dos movimentos
-            qualidade_atual = self.calcula_qualidade_movimento(posicao_atual, grade, jogo) 
-            proxima_qualidade = self.calcula_qualidade_movimento(proxima_posicao, grade, jogo) 
+            qualidade_atual = self.calcula_qualidade_movimento(posicao_atual, jogo) 
+            proxima_qualidade = self.calcula_qualidade_movimento(proxima_posicao, jogo) 
 
             diferenca_qualidade = proxima_qualidade - qualidade_atual
 
@@ -55,7 +50,7 @@ class SimulatedAnnealing(AgenteInteligente):
 
     # Cacula a temperatura da Simulated Annealing
     def _temperatura(self, numero_de_iteracoes):
-        return int(100/numero_de_iteracoes)
+        return int(200/numero_de_iteracoes)
 
     # Analisa se uma posição está definida nos lados da grade
     def _lados(self, posicao):
@@ -75,50 +70,49 @@ class SimulatedAnnealing(AgenteInteligente):
     
 
     # Analisa se uma posição está bloqueando o ganho do oponente
-    def _bloqueia_oponente(self, posicao, grade, jogo):
+    def _bloqueia_oponente(self, posicao, jogo):
+
         linha, coluna = posicao
-        # Analisa se o oponente colocar um simbolo na posicao dada ele ganha
-
-        # Recria o jogo e a grade hipoteticos
-        jogo_hipotetico = self._recria_jogo_hipotetico(jogo, grade)
-        grade_hipotetica = jogo_hipotetico._grade_atual.posicoes
-        grade_hipotetica[linha][coluna] = jogo._usuario.simbolo
 
 
-        if jogo_hipotetico.checa_vencedores() == jogo._usuario.simbolo:
-            grade_hipotetica[linha][coluna] = []
+        # Recria o jogo na situação hipotética do movimento dado
+        jogo_hipotetico = deepcopy(jogo)
+
+        # Recria o movimento hipotético
+        jogo_hipotetico._grade_atual.posicoes[linha][coluna] = jogo_hipotetico._usuario.simbolo
+
+        # Analisa se o oponente colocar um simbolo na posicao dada ele bloqueia o movimento
+        if jogo_hipotetico.checa_vencedores() == jogo_hipotetico._usuario.simbolo:
             return True
         else:
-            grade_hipotetica[linha][coluna] = []
             return False
 
-    def _ganha_o_jogo(self, posicao, grade, jogo):
-        print('posicao dentro de ganha o jogo: ',posicao)
+    def _ganha_o_jogo(self, posicao, jogo):
+
         linha, coluna = posicao
-        # Analisa se o oponente colocar um simbolo na posicao dada ele ganha
-
-        # Recria o jogo e a grade hipoteticos
-        jogo_hipotetico = self._recria_jogo_hipotetico(jogo, grade)
-        grade_hipotetica = jogo_hipotetico._grade_atual.posicoes
-        
-        grade_hipotetica[linha][coluna] = jogo._usuario.simbolo
 
 
-        if jogo_hipotetico.checa_vencedores() == jogo._agente_inteligente.simbolo:
-            grade_hipotetica[linha][coluna] = []
+        # Recria o jogo na situação hipotética do movimento dado
+        jogo_hipotetico = deepcopy(jogo)
+
+        # Recria o movimento hipotético
+        jogo_hipotetico._grade_atual.posicoes[linha][coluna] = jogo_hipotetico._agente_inteligente.simbolo
+
+        # Analisa se o agente inteligente colocar um simbolo na posicao dada ele ganha
+        if jogo_hipotetico.checa_vencedores() == jogo_hipotetico._agente_inteligente.simbolo:
             return True
         else:
-            grade_hipotetica[linha][coluna] = []
             return False
 
+    
     # Calcula um valor para a qualidade do movimento dado - de 2 a 10
-    def calcula_qualidade_movimento(self, posicao, grade, jogo):
+    def calcula_qualidade_movimento(self, posicao, jogo):
 
-        if self._ganha_o_jogo(posicao, grade, jogo):
+        if self._ganha_o_jogo(posicao, jogo):            
             return 10
-        elif self._bloqueia_oponente(posicao, grade, jogo):
+        elif self._bloqueia_oponente(posicao, jogo):
             return 6
-        elif self._ponto_central(posicao):
+        if self._ponto_central(posicao):
             return 5
         elif self._cantos(posicao):
             return 4
@@ -146,7 +140,6 @@ class SimulatedAnnealing(AgenteInteligente):
         vizinhos_da_posicao = self.get_vizinhos_da_posicao(posicao)
         posicoes_validas = self.get_posicoes_validas(grade)
         posicoes_vizinhas_validas = [vizinho_da_posicao for vizinho_da_posicao in vizinhos_da_posicao if vizinho_da_posicao in posicoes_validas]
-        print('posicoes_vizinhas_validas:', posicoes_vizinhas_validas)
         # Caso haja vizinhos, escolhe um, caso não, muda para outra posição valida sequencial
         if len(posicoes_vizinhas_validas) > 0:  
             posicao_aleatoria_valida_vizinha = random.choice(posicoes_vizinhas_validas)
@@ -182,7 +175,7 @@ class SimulatedAnnealing(AgenteInteligente):
     def posicionar_simbolo(self, grade, jogo):
 
         melhor_posicionamento = self.execute(grade, jogo)
-        print('melhor_posicionamento',melhor_posicionamento)
+
         grade.atualiza_grade(melhor_posicionamento[0], melhor_posicionamento[1], self.simbolo, jogo)
-        
+
         return melhor_posicionamento

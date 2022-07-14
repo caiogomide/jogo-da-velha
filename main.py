@@ -1,4 +1,4 @@
-from jogo_da_velha_view import JogoDaVelhaView
+from view.jogo_da_velha_view import JogoDaVelhaView
 
 '''
     Jogo da Velha
@@ -10,6 +10,7 @@ from jogo_da_velha_view import JogoDaVelhaView
     de um problema de Jogo da Velha, apresentado a UFMT como parte 
     da discipina de Inteligência Artificial, lecionada pelo docente
     Frederico Santos de Oliveira 
+
 '''
 
 if __name__ == "__main__":

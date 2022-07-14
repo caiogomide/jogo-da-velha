@@ -1,10 +1,10 @@
 import random
+import math
+
 from random import uniform
 from numpy.random import randn, rand, seed
-import math
-from copy import deepcopy
-
 from agente_inteligente import AgenteInteligente
+from copy import deepcopy
 
 class SimulatedAnnealing(AgenteInteligente):
 
@@ -12,19 +12,25 @@ class SimulatedAnnealing(AgenteInteligente):
         
         self.simbolo = simbolo
 
-    # Executa recursivamente a têmpera simulada até encontrar a melhor alternativa
+    '''
+    Método responsável por realizar recursivamente
+    o algorítimo de Simulated Annealing, até encontrar
+    a melhor escolha para o jogo
+    '''
     def execute(self, grade, jogo):
 
         # Posição inicial de análise - Simulação de jogada
         posicao_atual = (0,0)
 
-        # Define o número de iterações inicial
+        # Inicializa o número de iterações
         numero_de_iteracoes = 1
 
         while True:
 
+            # Calcula a temperatura, dado o número de iterações
             temperatura = self._temperatura(numero_de_iteracoes)
 
+            # Caso a temperatura tenha atingido o valor mínimo, retorna a melhor posição
             if temperatura == 0:
                 return posicao_atual
 
@@ -47,32 +53,49 @@ class SimulatedAnnealing(AgenteInteligente):
             
             numero_de_iteracoes+=1
 
-    # Cacula a temperatura da Simulated Annealing
+    '''
+    Método responsável por cálcular a temperatura, baseado no Simulated
+    Annealing, que diminui conforme o número de iterações
+    '''
     def _temperatura(self, numero_de_iteracoes):
   
         return int(200/numero_de_iteracoes)
 
-    # Analisa se uma posição está definida nos lados da grade
+    '''
+    Método que retorna um valor booleano indicando
+    se uma posição está nos lados da grade do 
+    Jogo da Velha
+    '''
     def _lados(self, posicao):
   
         lados = [(0,1),(1,2),(2,1),(1,0)]
         return posicao in lados
 
-    # Analisa se uma posição está definida nos cantados da grade
+    '''
+    Método que retorna um valor booleano indicando
+    se uma posição está nos cantos da grade do
+    Jogo da Velha
+    '''
     def _cantos(self, posicao):
   
         cantos = [(0,0),(0,2),(2,0),(2,2)]
         return posicao in cantos
     
-    # Analisa se uma posição está definida no centro da grade
+    '''
+    Método que retorna um valor booleano indicando
+    se uma posição está no centro da grade do
+    Jogo da Velha
+    '''
     def _ponto_central(self, posicao):
   
         return posicao == (1,1)
 
-
-    
-
-    # Analisa se uma posição está bloqueando o ganho do oponente
+    '''
+    Método que retorna um valor booleano indicando 
+    se ao posicionar um símbolo do Agente Inteligente
+    em determinada posição, está bloqueando a vitória
+    do oponente
+    '''
     def _bloqueia_oponente(self, posicao, jogo):
 
         linha, coluna = posicao
@@ -89,6 +112,11 @@ class SimulatedAnnealing(AgenteInteligente):
         else:
             return False
 
+    '''
+    Método que retorna um valor booleano indicando 
+    se ao posicionar um símbolo do Agente Inteligente
+    em determinada posição, está ganhando o jogo
+    '''
     def _ganha_o_jogo(self, posicao, jogo):
 
         linha, coluna = posicao
@@ -105,28 +133,32 @@ class SimulatedAnnealing(AgenteInteligente):
         else:
             return False
     
-    # Calcula um valor para a qualidade do movimento dado - de 2 a 10
+    '''
+    Método responsável por análisar uma posição
+    e calcular o quão bom este movimento é,
+    numa escala de 2 a 10
+    '''
     def calcula_qualidade_movimento(self, posicao, jogo):
 
         if self._ganha_o_jogo(posicao, jogo):            
             return 10
-
         elif self._bloqueia_oponente(posicao, jogo):
             return 6
-
         if self._ponto_central(posicao):
             return 5
-
         elif self._cantos(posicao):
             return 4
-
         elif self._lados(posicao):
             return 3
-
         else:
             return 2
 
 
+    '''
+    Método responsável por receber uma posição
+    como parâmetro e devolver quais são os vizinhos
+    desta posição
+    '''
     def get_vizinhos_da_posicao(self, posicao):
 
         vizinhos_por_posicao = {
@@ -143,38 +175,56 @@ class SimulatedAnnealing(AgenteInteligente):
 
         return vizinhos_por_posicao[posicao]
 
+    '''
+    Método responsável por retornar uma posição aleatória
+    que não esteja ocupada, e seja vizinha de uma posição
+    fornecida como parâmetro
+    '''
     def posicao_aleatoria_valida_vizinha(self, grade, posicao):
+
 
         vizinhos_da_posicao = self.get_vizinhos_da_posicao(posicao)
         posicoes_validas = self.get_posicoes_validas(grade)
+
+        # Calcula as posições vizinhas de uma posição, que não estejam ocupadas
         posicoes_vizinhas_validas = [vizinho_da_posicao for vizinho_da_posicao in vizinhos_da_posicao if vizinho_da_posicao in posicoes_validas]
 
         # Caso haja vizinhos, escolhe um, caso não, muda para outra posição valida sequencial
         if len(posicoes_vizinhas_validas) > 0:  
-
             posicao_aleatoria_valida_vizinha = random.choice(posicoes_vizinhas_validas)
             return posicao_aleatoria_valida_vizinha
-
+        # Caso não haja vizinhos da posição dada, que sejam válidos
         else:
-
             linha, coluna = posicao
+            # Caso ainda haja um espaço na coluna da direita, e que contenha vizinhos, escolhe-a
             if coluna < 2:
                 quantidade_de_vizinhos = len(self.posicao_aleatoria_valida_vizinha(grade,(linha, coluna+1)))
                 if quantidade_de_vizinhos > 1:
                     return self.posicao_aleatoria_valida_vizinha(grade,(linha, coluna+1))
+            # Caso não haja um espaço na coluna da direita, mas há linhas abaixo, escolhe-a
             elif coluna == 2 and linha < 2:
                 quantidade_de_vizinhos = len(self.posicao_aleatoria_valida_vizinha(grade,(linha+1, coluna)))
                 if quantidade_de_vizinhos > 1:
                     return self.posicao_aleatoria_valida_vizinha(grade,(linha+1, coluna))
+            # Caso não haja espaços vizinhos correspondetes, escolhe uma posição aleatória da grade
             else:
                 return self.posicao_aleatoria_valida(grade)
 
+    '''
+    Método responsável por escolher uma posição
+    de forma aleatória, desde que não esteja 
+    ocupada por um símbolo
+    '''
     def posicao_aleatoria_valida(self, grade):
 
         posicoes_validas = self.get_posicoes_validas(grade)
         posicao_aleatoria_valida = random.choice(posicoes_validas)
         return posicao_aleatoria_valida
 
+    '''
+    Método responsável por encontrar todas as posições
+    não ocupadas na grade, retorna-as em forma de lsita
+    '''
     def get_posicoes_validas(self, grade):
 
         posicoes_validas = []
@@ -184,14 +234,18 @@ class SimulatedAnnealing(AgenteInteligente):
                 # Caso o espaço da grade esteja vazio
                 if grade.posicoes[linha][coluna] == []:
                     posicoes_validas.append((linha, coluna))
-                    
+
         return posicoes_validas
 
-
+    '''
+    Método responsável por posicionar o simbolo, 
+    considerando a melhor opção, dado pelo algorítimo
+    Simulated Annealing
+    '''
     def posicionar_simbolo(self, grade, jogo):
 
         melhor_posicionamento = self.execute(grade, jogo)
 
+        # Atualiza a grade com o melhor posicionamento escolhido pelo Simulated Annealing
         grade.atualiza_grade(melhor_posicionamento[0], melhor_posicionamento[1], self.simbolo, jogo)
-
         return melhor_posicionamento

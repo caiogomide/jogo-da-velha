@@ -8,9 +8,14 @@ class AgenteInteligente(Jogador):
 
         self.simbolo = simbolo
 
+    '''
+    Método responsável pelo Agente Inteligente
+    posicionar um símbolo dado uma grade,
+    retorna o melhor posicionamento, no formato
+    (linha, coluna)
+    '''
     @abstractmethod
     def posicionar_simbolo(self, grade, jogo):
-        
-        pass
 
+        pass
 

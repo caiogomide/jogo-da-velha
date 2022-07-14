@@ -1,4 +1,4 @@
-from agente_inteligente import AgenteInteligente
+from controller.jogadores.agente.agente_inteligente import AgenteInteligente
 
 
 class Minimax(AgenteInteligente):

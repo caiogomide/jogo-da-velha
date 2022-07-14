@@ -8,8 +8,8 @@ Este projeto utiliza conceitos de Inteligência Artificial, na aplicação de tr
   
 Cada um dos algorítimos apresentados acima atingiram diferentes níveis de sucesso do seu objetivo. Sendo o mais eficiente e menos complexo, o Minimax. Ao Iniciar o jogo, você pode utilizar com qual deseja jogar!
 
-  . Díficil (Minimax)
-  . Médio (Simulated Annealing)
-  . Fácil ()
+  ⋅⋅*Díficil (Minimax)
+  ⋅⋅*Médio (Simulated Annealing)
+  ⋅⋅*Fácil ()
   
 ## 🚀 Começando

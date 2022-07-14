@@ -4,8 +4,8 @@ Este projeto utiliza conceitos de Inteligência Artificial, na aplicação de tr
 
 Ao Iniciar o jogo, você pode utilizar com qual deseja jogar!
 
-  * 🔴 Díficil (Minimax)
-  * 🟡 Médio (Simulated Annealing)
-  * 🟢 Fácil ()
+   🔴 Díficil (Minimax)
+   🟡 Médio (Simulated Annealing)
+   🟢 Fácil ()
   
 ## 🚀 Começando

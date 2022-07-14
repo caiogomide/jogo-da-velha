@@ -1,7 +1,7 @@
-from minimax import Minimax
-import simulated_annealing
-from grade import Grade
-from usuario import Usuario
+from controller.grade import Grade
+import controller.jogadores.agente.simulated_annealing as simulated_annealing
+from controller.jogadores.agente.minimax import Minimax
+from controller.jogadores.usuario.usuario import Usuario
 
 class JogoDaVelhaController:
     

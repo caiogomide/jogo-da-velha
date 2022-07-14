@@ -1,12 +1,16 @@
 from jogador import Jogador
 
-class Usuario(Jogador):
+from abc import abstractmethod
+
+class AgenteInteligente(Jogador):
 
     def __init__(self,simbolo):
 
         self.simbolo = simbolo
 
-    def posicionar_simbolo(self, linha, coluna, grade,jogo):
+    @abstractmethod
+    def posicionar_simbolo(self, grade, jogo):
+        
+        pass
 
-        grade.atualiza_grade(linha, coluna, self.simbolo, jogo)
 

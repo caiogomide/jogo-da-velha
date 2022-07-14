@@ -1,5 +1,8 @@
-    
-from agente_inteligente import AgenteInteligente
+  from charset_normalizer import from_fp
+from minimax import Minimax
+
+
+import simulated_annealing
 from grade import Grade
 from usuario import Usuario
 
@@ -8,7 +11,8 @@ class JogoDaVelhaController:
     
     def __init__(self):
         self._usuario = Usuario('')
-        self._agente_inteligente = AgenteInteligente('')
+        self._agente_inteligente = self.cria_agente_inteligente()
+        self._numero_de_jogadas = 0
         self._grade_atual = Grade()
         self._combinacoes_vencedoras = self.get_combinacoes_vencedoras()
         self._ha_vencedor = False
@@ -17,7 +21,32 @@ class JogoDaVelhaController:
         self._pontuacao_agente_inteligente = 0
         self._contador_empate = 0
     
+    def cria_agente_inteligente(agente_inteligente):
 
+
+        entrada_valida = False
+        while entrada_valida != True:
+       
+            print('[1] Para jogar com o Agente Inteligente Minimax \n[2] Para jogar com o Agente Inteligente Simulated Annealing')
+            agente_inteligente = int(input('Digite o código do Agente Inteligente Desejado: '))
+            if agente_inteligente == 1:
+                entrada_valida = True
+                return Minimax('')
+            elif agente_inteligente == 2:
+                entrada_valida = True
+                return simulated_annealing.SimulatedAnnealing('')
+            else:
+                print("Entrada Inválida, tente novamente.")
+
+    def quantidade_espacos_posicionados(self):
+        quantidade_espacos_posicionados = 0
+        posicoes_grade = self._grade_atual.posicoes
+        for linha in posicoes_grade:
+            for coluna in linha:
+                if coluna == 'X' or coluna == 'O':
+                    quantidade_espacos_posicionados+=1
+        print('posicoes_grade:',posicoes_grade)
+        return quantidade_espacos_posicionados
 
     def ha_espacos_vazios(self):
         posicoes_grade = self._grade_atual.posicoes
@@ -127,3 +156,4 @@ class JogoDaVelhaController:
         self._grade_atual = Grade()
         self._ha_vencedor = False
         self._flag_rodada = 'usuario'
+        self._numero_de_jogadas = 0

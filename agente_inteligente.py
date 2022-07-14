@@ -12,8 +12,3 @@ class AgenteInteligente(Jogador):
     def posicionar_simbolo(self, grade, jogo):
         pass
 
-    # Recria jogo para não alterar localmente o jogo real
-    def _recria_jogo_hipotetico(self, jogo, grade):
-        jogo_hipotetico = jogo
-        jogo_hipotetico.grade = grade
-        return jogo_hipotetico

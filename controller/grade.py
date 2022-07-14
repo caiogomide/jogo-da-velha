@@ -29,4 +29,3 @@ class Grade:
 
         self.posicoes[linha][coluna] = simbolo
         jogo._numero_de_jogadas += 1
-    

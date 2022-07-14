@@ -7,8 +7,8 @@ from threading import Thread
 
 from time import sleep
 
-from jogo_da_velha_controller import JogoDaVelhaController
-from usuario import Usuario
+from controller.jogo_da_velha_controller import JogoDaVelhaController
+from controller.jogadores.usuario.usuario import Usuario
 
 class JogoDaVelhaView(tk.Tk):
 
@@ -125,13 +125,13 @@ class JogoDaVelhaView(tk.Tk):
         )
       
       # Cria um botão para tela inicial representando o ícone X
-      icone_x = PhotoImage(file = r"assets/icones/icone-x.png") 
+      icone_x = PhotoImage(file = r"view/assets/icones/icone-x.png") 
 
       botao_x = Button(tela_inicial, text = "X", image = icone_x, bg = "#F5F5F5", borderwidth=0, command=lambda: self.muda_tela(self._tela_de_jogo,msg="X"))
       botao_x.image = icone_x
 
       # Cria um botão para tela inicial representando o ícone O
-      icone_o = PhotoImage(file = r"assets/icones/icone-o.png") 
+      icone_o = PhotoImage(file = r"view/assets/icones/icone-o.png") 
       botao_o = Button(tela_inicial, text = "O", image = icone_o, bg = "#F5F5F5", borderwidth=0, command=lambda: self.muda_tela(self._tela_de_jogo,msg="O"))
       botao_o.image = icone_o
 
@@ -193,7 +193,7 @@ class JogoDaVelhaView(tk.Tk):
                 espaco = tk.Button(
                     bg = "#F5F5F5",
                     master=tela_de_jogo,
-                    image = PhotoImage(file = f"assets/background/background-cor.png") ,
+                    image = PhotoImage(file = f"view/assets/background/background-cor.png") ,
                     font=font.Font(size=48, weight="bold"),
                     fg="black",
                     width=150,
@@ -228,7 +228,7 @@ class JogoDaVelhaView(tk.Tk):
     def atualiza_imagem_posicao(self, posicao_clicada, simbolo):
 
         # Acessa a imagem respectiva ao símbolo dado
-        simbolo = PhotoImage(file = f"assets/simbolos/simbolo-{simbolo.lower()}.png") 
+        simbolo = PhotoImage(file = f"view/assets/simbolos/simbolo-{simbolo.lower()}.png") 
         # Adiciona a imagem a posicao clicada
         posicao_clicada.config(image = simbolo)
         posicao_clicada.image = simbolo
@@ -339,7 +339,7 @@ class JogoDaVelhaView(tk.Tk):
         
         # Encontra a coordenada selecionada
         for posicao in self.posicoes.keys():   
-            posicao.config(highlightbackground="#121212", image=PhotoImage(master=self._tela, file = f"assets/background/background-cor.png"), highlightthickness=3)     
+            posicao.config(highlightbackground="#121212", image=PhotoImage(master=self._tela, file = f"view/assets/background/background-cor.png"), highlightthickness=3)     
             
         self.status.config(text="")
            
@@ -408,14 +408,3 @@ class JogoDaVelhaView(tk.Tk):
         # View de agente ganhou
         elif agente_ganhou:
             self._personaliza_agente_ganhou()
-
-        
-
-        
-
-            
-
-                
-
-      
-

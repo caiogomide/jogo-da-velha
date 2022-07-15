@@ -47,5 +47,5 @@ python main.py
 
 ## ✒️ Autores
 
-* [**Caio Gomide**](github.com/caiogomide)
-* [**Geysson Viana**](github.com/geyssongg)
+* [**Caio Gomide**](https://www.github.com/caiogomide)
+* [**Geysson Viana**](https://www.github.com/geyssongg)

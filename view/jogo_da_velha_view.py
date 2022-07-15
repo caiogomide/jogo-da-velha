@@ -24,7 +24,7 @@ class JogoDaVelhaView(tk.Tk):
         # Define as telas possiveis do jogo
         self._tela_inicial = self.cria_tela_inicial()
         self._tela_de_jogo = self.cria_grade()
-
+        self._tela_de_escolha_de_dificuldade = self.cria_tela_escolha_dificuldade()
         # Define a tela que está sendo mostrada
         self._tela = None
 
@@ -35,7 +35,7 @@ class JogoDaVelhaView(tk.Tk):
         self.simbolo_escolhido = ""
         
         # Mostra a tela inicial
-        self.muda_tela(self._tela_inicial)
+        self.muda_tela(self._tela_de_escolha_de_dificuldade)
 
         # Checa se o jogo terminou, caso sim, atualiza a view
         Thread(target=self.mudanca_listener).start()
@@ -97,6 +97,49 @@ class JogoDaVelhaView(tk.Tk):
         self._tela = nova_tela
         self._tela.pack(fill=tk.X,expand=10000)
 
+    '''
+    Método responsável por criar a tela de escolha
+    de dificuldade
+    '''
+    def cria_tela_escolha_dificuldade(self):
+
+        # Cria a tela de escolha de dificuldade
+        tela_escolha_dificuldade = tk.Frame(master=self, bg="#F5F5F5",pady=100)
+
+        # Cria a estilização dos botões
+        botao_facil = Button(tela_escolha_dificuldade, text = "Fácil", bg = "#4eaf41",fg = "#F5F5F5", borderwidth=0, width=20, activebackground="#4eaf41", command=lambda: self.muda_tela(self._tela_inicial))
+        botao_medio = Button(tela_escolha_dificuldade, text = "Médio", bg = "#f9cb08" ,fg = "#F5F5F5", borderwidth=0, width=20, activebackground="#f9cb08", command=lambda: self.muda_tela(self._tela_inicial) )
+        botao_dificil = Button(tela_escolha_dificuldade, text = "Díficil", bg = "#dd3c3a" ,fg = "#F5F5F5", borderwidth=0, width=20, activebackground="#dd3c3a", command=lambda: self.muda_tela(self._tela_inicial))
+        
+        # Atribuindo as funções de dificuldade aos botões
+        botao_dificil.bind("<ButtonPress-1>", func =  lambda event: self.jogo.cria_agente_inteligente(1))
+        botao_medio.bind("<ButtonPress-1>", func = lambda event: self.jogo.cria_agente_inteligente(2))
+        botao_facil.bind("<ButtonPress-1>", func = lambda event: self.jogo.cria_agente_inteligente(3))
+
+        # Cria o texto de dificuldade do jogo
+        texto_inicial = tk.Label(
+
+                master=tela_escolha_dificuldade,
+
+                text="ESCOLHA A DIFICULDADE QUE DESEJA JOGAR",
+
+                bg="#F5F5F5",
+
+                fg = "#121212",
+
+                font=font.Font(size=12, weight="bold"),
+
+            )
+        
+        # Posiciona o texto do jogo
+        texto_inicial.pack(pady=25)
+
+        # Posiciona os botões no jogo
+        botao_dificil.pack(padx=200,pady=25)
+        botao_medio.pack(padx=200,pady=25)
+        botao_facil.pack(padx=200,pady=25)       
+
+        return tela_escolha_dificuldade
     '''
     Método responsável por criar a tela inicial
     de boas vindas ao usuário, retorna um objeto
@@ -408,3 +451,13 @@ class JogoDaVelhaView(tk.Tk):
         # View de agente ganhou
         elif agente_ganhou:
             self._personaliza_agente_ganhou()
+
+        
+
+        
+
+            
+
+                
+
+      

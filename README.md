@@ -8,7 +8,7 @@ Ao Iniciar o jogo, você pode utilizar com qual deseja jogar!
    
    🟡 Médio *(Simulated Annealing)*
    
-   🟢 Fácil 
+   🟢 Fácil *(Hill Climbing)*
   
 ## 🚀 Começando
 

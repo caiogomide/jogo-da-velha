@@ -23,7 +23,7 @@ Ao Iniciar o jogo, você pode utilizar com qual deseja jogar!
  
  *Verifique a instalação com o comando a seguir:*
  ``` 
-python -- version
+python --version
  ```
 📦 **Tkinter na versão estável atual (8.6)**
 

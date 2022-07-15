@@ -34,3 +34,18 @@ python -- version
 
 ### 🔧 Instalação
  
+Instale o código compactado [aqui](https://github.com/caiogomide/jogo-da-velha/archive/refs/heads/main.zip) 
+
+Ao descompactar o arquivo na sua máquina, você, para rodar o jogo, deverá executar o seguinte comando, dentro da pasta onde houve a descompactação:
+```
+python main.py
+```
+
+## 🛠️ Construído com
+
+* [Tkinter](https://docs.python.org/3/library/tkinter.html) - Responsável pela Graphical User Interface (GUI)
+
+## ✒️ Autores
+
+* [**Caio Gomide**](github.com/caiogomide)
+* [**Geysson Viana**](github.com/geyssongg)

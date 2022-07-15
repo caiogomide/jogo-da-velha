@@ -1,4 +1,5 @@
 from controller.grade import Grade
+from controller.jogadores.agente.agente_inteligente import AgenteInteligente
 import controller.jogadores.agente.simulated_annealing as simulated_annealing
 from controller.jogadores.agente.minimax import Minimax
 from controller.jogadores.usuario.usuario import Usuario
@@ -8,10 +9,9 @@ class JogoDaVelhaController:
     def __init__(self):
 
         self._usuario = Usuario('')
-        self._agente_inteligente = self.cria_agente_inteligente()
         self._flag_rodada = 'usuario'
         self._grade_atual = Grade()
-
+        self._agente_inteligente = ""
         self._numero_de_jogadas = 0
         
         self._combinacoes_vencedoras = self.get_combinacoes_vencedoras()
@@ -23,29 +23,28 @@ class JogoDaVelhaController:
     
     '''
     Método responsável por criar um Agente Inteligente
-    ao receber um parâmetro que o determina, retorna
-    alguma classe herdeira de Agente Inteligente,
-    SimulatedAnnealing ou Minimax
+    ao receber um parâmetro que o determina
     '''
-    def cria_agente_inteligente(self):
+    def cria_agente_inteligente(self,codigo):
 
         entrada_valida = False
 
         while entrada_valida != True:
        
-            print('[1] Para jogar com o Agente Inteligente Minimax \n[2] Para jogar com o Agente Inteligente Simulated Annealing')
+
+            if codigo == 1:
+
+                entrada_valida = True
+                self._agente_inteligente = Minimax('')
+
+            elif codigo == 2:
+
+                entrada_valida = True
+                self._agente_inteligente = simulated_annealing.SimulatedAnnealing('')
             
-            agente_inteligente = int(input('Digite o código do Agente Inteligente Desejado: '))
+            elif codigo == 3:
 
-            if agente_inteligente == 1:
-
-                entrada_valida = True
-                return Minimax('')
-
-            elif agente_inteligente == 2:
-
-                entrada_valida = True
-                return simulated_annealing.SimulatedAnnealing('')
+                pass
 
             else:
 

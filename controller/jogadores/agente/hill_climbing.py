@@ -240,6 +240,6 @@ class HillClimbing(AgenteInteligente):
 
         melhor_posicionamento = self.execute(grade, jogo)
 
-        # Atualiza a grade com o melhor posicionamento escolhido pelo Simulated Annealing
+        # Atualiza a grade com o melhor posicionamento escolhido pelo Hill Climbing
         grade.atualiza_grade(melhor_posicionamento[0], melhor_posicionamento[1], self.simbolo, jogo)
         return melhor_posicionamento

@@ -1,6 +1,7 @@
 from controller.grade import Grade
 from controller.jogadores.agente.agente_inteligente import AgenteInteligente
 import controller.jogadores.agente.simulated_annealing as simulated_annealing
+import controller.jogadores.agente.hill_climbing as hill_climbing
 from controller.jogadores.agente.minimax import Minimax
 from controller.jogadores.usuario.usuario import Usuario
 
@@ -44,7 +45,8 @@ class JogoDaVelhaController:
             
             elif codigo == 3:
 
-                pass
+                entrada_valida = True
+                self._agente_inteligente = hill_climbing.HillClimbing('')
 
             else:
 

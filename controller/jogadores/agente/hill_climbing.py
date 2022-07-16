@@ -9,8 +9,8 @@ class HillClimbing(AgenteInteligente):
 
     def __init__(self, simbolo):
         
-        self.simbolo = simbolo
-
+        self.simbolo = simbolo  
+        self.valor_de_referencia_vizinhos = 5
     '''
     Método responsável por realizar recursivamente
     o algorítimo de Hill Climbing, até encontrar
@@ -19,7 +19,7 @@ class HillClimbing(AgenteInteligente):
     def execute(self, grade, jogo):
 
         posicao_local_melhor_encontrada = False
-        valor_de_referencia_vizinhos = 5
+        
         # Posição inicial de análise - Simulação de jogada
         posicao_atual =  self.posicao_aleatoria_valida(grade)
         while posicao_local_melhor_encontrada != True:
@@ -44,7 +44,7 @@ class HillClimbing(AgenteInteligente):
             posicoes_vizinhas_validas = [vizinho_da_posicao for vizinho_da_posicao in vizinhos_da_posicao if vizinho_da_posicao in posicoes_validas]
             
             # Caso não tenha mais vizinhos, encontrou a melhor posição local
-            nao_tem_mais_vizinho = len(posicoes_vizinhas_validas) < valor_de_referencia_vizinhos
+            nao_tem_mais_vizinho = len(posicoes_vizinhas_validas) < self.valor_de_referencia_vizinhos
             
             if nao_tem_mais_vizinho:
                 posicao_local_melhor_encontrada = True
